@@ -1,0 +1,90 @@
+#include <stdio.h> 
+#include <string.h> 
+#define MAX 100 
+struct Book { 
+    char title[100]; 
+    float cost;}; 
+// Function declarations 
+int deleteDuplicates(struct Book books[], int n); 
+void displaySortedBooks(struct Book books[], int n); 
+int countBooksAbove500(struct Book books[], int n); 
+int copyBooksBelow500(struct Book source[], struct Book dest[], int n); 
+void displayBooks(struct Book books[], int n); 
+int main() { 
+    struct Book books[MAX], cheapBooks[MAX]; 
+    int n, i, newCount; 
+    printf("Enter number of books: "); 
+    scanf("%d", &n); 
+    // Input book details 
+    for(i = 0; i < n; i++) { 
+        printf("Enter title of book %d: ", i+1); 
+        scanf(" %[^\n]s", books[i].title);  // to read string with spaces 
+        printf("Enter cost of book %d: ", i+1); 
+        scanf("%f", &books[i].cost); 
+    } 
+ 
+    // a. Delete duplicate entries 
+    n = deleteDuplicates(books, n); 
+    printf("\nAfter deleting duplicates, books are:\n"); 
+    displayBooks(books, n); 
+    // b. Display books in ascending order based on cost 
+    printf("\nBooks sorted by cost (ascending):\n"); 
+    displaySortedBooks(books, n); 
+    // c. Count number of books with cost more than 500 
+    int count = countBooksAbove500(books, n); 
+    printf("\nNumber of books with cost more than 500: %d\n", count); 
+    // d. Copy books with cost < 500 to new list 
+    newCount = copyBooksBelow500(books, cheapBooks, n); 
+    printf("\nBooks with cost less than 500 copied to new list:\n"); 
+    displayBooks(cheapBooks, newCount); 
+    return 0; 
+} 
+// Function to delete duplicate entries (same title and cost) 
+int deleteDuplicates(struct Book books[], int n) { 
+    int i, j, k; 
+    for(i = 0; i < n; i++) { 
+        for(j = i + 1; j < n; ) { 
+            if(strcmp(books[i].title, books[j].title) == 0 && books[i].cost == 
+books[j].cost) { 
+                // Shift elements left 
+                for(k = j; k < n - 1; k++) { 
+                    books[k] = books[k + 1]; 
+                } 
+                n--; // reduce size 
+            } else { 
+                j++;}}} 
+    return n;} 
+// Function to display books in ascending order of cost (using Bubble Sort) 
+void displaySortedBooks(struct Book books[], int n) { 
+    struct Book temp; 
+    int i, j; 
+    // Bubble sort 
+    for(i = 0; i < n - 1; i++) { 
+        for(j = 0; j < n - i - 1; j++) { 
+            if(books[j].cost > books[j + 1].cost) { 
+                temp = books[j]; 
+                books[j] = books[j + 1]; 
+                books[j + 1] = temp;}}} 
+ displayBooks(books, n);} 
+// Function to count books with cost more than 500 
+int countBooksAbove500(struct Book books[], int n) { 
+    int count = 0, i; 
+    for(i = 0; i < n; i++) { 
+        if(books[i].cost > 500) { 
+            count++; 
+        }} 
+    return count;} 
+// Function to copy books with cost < 500 to another list 
+int copyBooksBelow500(struct Book source[], struct Book dest[], int n) { 
+int i, j = 0; 
+for(i = 0; i < n; i++) { 
+if(source[i].cost < 500) { 
+dest[j++] = source[i];}} 
+return j;} 
+// Function to display list of books 
+void displayBooks(struct Book books[], int n) { 
+int i; 
+for(i = 0; i < n; i++) { 
+printf("Title: %s, Cost: %.2f\n", books[i].title, books[i].cost); 
+} 
+} 
