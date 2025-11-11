@@ -1,0 +1,29 @@
+mark = [] 
+n = int(input('Enter the total number of students: ')) 
+ 
+for i in range(n): 
+    m = int(input(f'Enter marks for student {i+1}: ')) 
+    mark.append(m) 
+ 
+print("Enter 1 for Selection Sort, 2 for Bubble Sort") 
+c = int(input()) 
+ 
+def selection_sort(mark, n): 
+    for i in range(n): 
+        max_idx = i 
+        for j in range(i+1, n): 
+            if mark[j] > mark[max_idx]:  # descending order 
+                max_idx = j 
+        mark[i], mark[max_idx] = mark[max_idx], mark[i] 
+ 
+def bubble_sort(mark, n): 
+    for i in range(n): 
+        for j in range(0, n-i-1): 
+            if mark[j] < mark[j+1]:  # descending order 
+                mark[j], mark[j+1] = mark[j+1], mark[j] 
+ 
+if n == 5:
+    selection_sort(mark, n) 
+else:
+    bubble_sort(mark, n)
+print("Highest 5 student marks:", mark[:5])
