@@ -1,0 +1,37 @@
+class queue:
+    def __init__(self):
+        self.jobs = []
+
+    def add(self, job):
+        self.jobs.append(job)
+        print(f"Added: {job}")
+
+    def process(self):
+        if self.jobs:
+            print(f"Printing: {self.jobs.pop(0)}")
+        else:
+            print("No jobs in queue!")
+
+    def show(self):
+        print("Jobs:", self.jobs if self.jobs else "Empty!")
+
+q = queue()
+
+while True:
+    print("\n1.Add  2.Process  3.Show  4.Exit")
+    ch = input("Choice: ")
+
+    if ch == "1":
+        q.add(input("Job name: "))
+
+    elif ch == "2":
+        q.process()
+
+    elif ch == "3":
+        q.show()
+
+    elif ch == "4":
+        break
+
+    else:
+        print("Invalid!")
