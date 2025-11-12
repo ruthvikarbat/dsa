@@ -1,167 +1,115 @@
--- ================================================
--- 📘 ASSIGNMENT 1 – Basic SQL Queries
--- ================================================
+-- ===============================================
+-- 🏫 DATABASE ASSIGNMENT
+-- Topic: SQL Queries based on Student–College Schema
+-- ===============================================
 
--- 🧠 Topic:
--- Creating and querying relational tables:
--- student, enrolls, college, mentors.
+-- 💾 Step 1: Create a new Database
+CREATE DATABASE CollegeDB;
 
--- Step 1: Create Database and Tables
-CREATE DATABASE student_db;
-USE student_db;
+-- 💿 Step 2: Use the Database
+USE CollegeDB;
 
-CREATE TABLE student(
+-- ===============================================
+-- 🧱 Step 3: Create Tables
+-- ===============================================
+
+CREATE TABLE student (
     student_name VARCHAR(50),
-    street VARCHAR(50),
+    street VARCHAR(100),
     city VARCHAR(50)
 );
 
-CREATE TABLE enrolls(
+CREATE TABLE enrolls (
     student_name VARCHAR(50),
     college_name VARCHAR(50),
     scholarship INT
 );
 
-CREATE TABLE college(
+CREATE TABLE college (
     college_name VARCHAR(50),
     city VARCHAR(50)
 );
 
-CREATE TABLE mentors(
+CREATE TABLE mentors (
     student_name VARCHAR(50),
     mentor_name VARCHAR(50)
 );
 
--- Step 2: Insert Sample Data
+-- ===============================================
+-- 🧾 Step 4: Insert Sample Data
+-- ===============================================
+
 INSERT INTO student VALUES
-('Ravi','MG Road','Pune'),
-('Sneha','Linking Rd','Mumbai'),
-('Amit','Park St','Kolkata'),
-('Priya','Brigade Rd','Bangalore');
+('Ravi', 'MG Road', 'Mumbai'),
+('Anita', 'Church Street', 'Delhi'),
+('Rahul', 'Park Lane', 'Chennai'),
+('Sneha', 'Baker Street', 'Delhi'),
+('Kiran', 'Main Street', 'Pune');
 
 INSERT INTO college VALUES
-('First National College','Mumbai'),
-('Small Town College','Pune');
+('First National College', 'Delhi'),
+('Modern College', 'Mumbai'),
+('City Science College', 'Chennai');
 
 INSERT INTO enrolls VALUES
-('Ravi','First National College',12000),
-('Sneha','Small Town College',8000),
-('Amit','First National College',15000),
-('Priya','Small Town College',9000);
+('Ravi', 'Modern College', 8000),
+('Anita', 'First National College', 12000),
+('Rahul', 'City Science College', 7000),
+('Sneha', 'First National College', 15000),
+('Kiran', 'First National College', 9000);
 
 INSERT INTO mentors VALUES
-('Ravi','Mr. Shah'),
-('Sneha','Ms. Patel'),
-('Amit','Mr. Das'),
-('Priya','Mr. Kumar');
+('Ravi', 'Prof. Mehta'),
+('Anita', 'Prof. Sharma'),
+('Rahul', 'Prof. Singh'),
+('Sneha', 'Prof. Verma'),
+('Kiran', 'Prof. Gupta');
 
--- =====================================================
--- Q1. Display names of students enrolled in First National College
--- =====================================================
-SELECT student_name
-FROM enrolls
-WHERE college_name='First National College';
+-- ===============================================
+-- 🧩 Step 5: SQL QUERIES (Assignment Questions)
+-- ===============================================
 
--- =====================================================
--- Q2. Display names and cities of students enrolled in First National College
--- =====================================================
+-- ❓ Question 1:
+-- Find the names of all students who are enrolled in First National College.
+
+SELECT s.student_name
+FROM student s
+JOIN enrolls e ON s.student_name = e.student_name
+WHERE e.college_name = 'First National College';
+
+-- -----------------------------------------------
+
+-- ❓ Question 2:
+-- Find the names and cities of residence of all students who are enrolled in First National College.
+
 SELECT s.student_name, s.city
 FROM student s
-JOIN enrolls e ON s.student_name=e.student_name
-WHERE e.college_name='First National College';
+JOIN enrolls e ON s.student_name = e.student_name
+WHERE e.college_name = 'First National College';
 
--- =====================================================
--- Q3. Display students in First National College with scholarship > 10000
--- =====================================================
-SELECT student_name
-FROM enrolls
-WHERE college_name='First National College' AND scholarship>10000;
+-- -----------------------------------------------
 
--- =====================================================
--- Q4. Display students who live in the same city as their college
--- =====================================================
+-- ❓ Question 3:
+-- Find the names, street addresses, and cities of residence of all students
+-- who are enrolled in First National College and received a scholarship of more than Rs. 10,000.
+
+SELECT s.student_name, s.street, s.city
+FROM student s
+JOIN enrolls e ON s.student_name = e.student_name
+WHERE e.college_name = 'First National College'
+  AND e.scholarship > 10000;
+
+-- -----------------------------------------------
+
+-- ❓ Question 4:
+-- Find all students in the database who live in the same cities as the colleges in which they are enrolled.
+
 SELECT s.student_name
 FROM student s
-JOIN enrolls e ON s.student_name=e.student_name
-JOIN college c ON e.college_name=c.college_name
-WHERE s.city=c.city;
+JOIN enrolls e ON s.student_name = e.student_name
+JOIN college c ON e.college_name = c.college_name
+WHERE s.city = c.city;
 
--- =====================================================
--- Q5. Display students who live in the same city and street as their mentors
--- (Assumed data: same street/city manually)
--- =====================================================
-SELECT s.student_name
-FROM student s
-JOIN mentors m ON s.student_name=m.student_name
-WHERE s.city='Mumbai' AND s.street='Linking Rd';
-
--- =====================================================
--- Q6. Display students not enrolled in First National College
--- =====================================================
-SELECT student_name
-FROM enrolls
-WHERE college_name!='First National College';
-
--- =====================================================
--- Q7. Display students whose scholarship is greater than every student 
---     in Small Town College
--- =====================================================
-SELECT student_name
-FROM enrolls
-WHERE scholarship > ALL(
-  SELECT scholarship
-  FROM enrolls
-  WHERE college_name='Small Town College'
-);
-
--- =====================================================
--- Q8. Display colleges located in every city where Small Town College is located
--- =====================================================
-SELECT college_name
-FROM college
-WHERE city IN (
-  SELECT city
-  FROM college
-  WHERE college_name='Small Town College'
-);
-
--- =====================================================
--- Q9. Display students with scholarship greater than average at their college
--- =====================================================
-SELECT e.student_name
-FROM enrolls e
-WHERE scholarship > (
-  SELECT AVG(scholarship)
-  FROM enrolls
-  WHERE college_name=e.college_name
-);
-
--- =====================================================
--- Q10. Display the college with the most students enrolled
--- =====================================================
-SELECT college_name, COUNT(student_name) AS total_students
-FROM enrolls
-GROUP BY college_name
-ORDER BY total_students DESC
-LIMIT 1;
-
--- =====================================================
--- Q11. Display the college with the smallest total scholarship payout
--- =====================================================
-SELECT college_name, SUM(scholarship) AS total_scholarship
-FROM enrolls
-GROUP BY college_name
-ORDER BY total_scholarship ASC
-LIMIT 1;
-
--- =====================================================
--- Q12. Display the colleges whose average scholarship is greater than
---       the average scholarship at First National College
--- =====================================================
-SELECT college_name
-FROM enrolls
-GROUP BY college_name
-HAVING AVG(scholarship) >
-(SELECT AVG(scholarship)
- FROM enrolls
- WHERE college_name='First National College');
+-- ===============================================
+-- ✅ End of Program
+-- ===============================================
